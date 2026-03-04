@@ -135,6 +135,14 @@
     },
 
     /**
+     * Get the wallet's current privacy mode.
+     * @returns {Promise<string>}  'transparent' | 'confidential' | 'private'
+     */
+    getPrivacyMode() {
+      return sendRequest('getPrivacyMode');
+    },
+
+    /**
      * Subscribe to wallet events.
      * Events: 'payment_received', 'payment_sent', 'escrow_created',
      *         'match_found', 'balance_changed'

@@ -5,6 +5,13 @@
  * auto-approve rules, transaction queue, notifications, polling.
  */
 
+// Cross-browser compatibility: Chrome MV3 uses chrome.*, Firefox uses browser.*
+// In module workers importScripts() is unavailable, so we shim directly.
+// Chrome MV3 APIs already return Promises, so a simple alias suffices.
+if (typeof globalThis.browser === 'undefined') {
+  globalThis.browser = globalThis.chrome;
+}
+
 import { MSG, AUTO_LOCK_DEFAULT_MS, BALANCE_POLL_MS, API_BASE } from '../utils/constants.js';
 
 // ── In-memory state (lost on SW restart, rebuilt from storage) ──
@@ -30,7 +37,7 @@ let lastActivity = Date.now();
 
 // ── Bootstrap: restore from storage ────────────────────────────
 async function bootstrap() {
-  const stored = await chrome.storage.local.get([
+  const stored = await browser.storage.local.get([
     'encryptedToken', 'wallet', 'connectedSites', 'autoRules',
     'autoApproveEnabled', 'notifications', 'settings', 'locked',
   ]);
@@ -49,7 +56,7 @@ bootstrap();
 function persist(keys) {
   const data = {};
   for (const k of keys) data[k] = state[k];
-  chrome.storage.local.set(data);
+  browser.storage.local.set(data);
 }
 
 // ── API helper ─────────────────────────────────────────────────
@@ -112,9 +119,9 @@ function handleLogout() {
   state.wallet = null;
   state.locked = true;
   state.queue = [];
-  chrome.storage.local.remove(['encryptedToken']);
+  browser.storage.local.remove(['encryptedToken']);
   persist(['wallet', 'locked']);
-  chrome.alarms.clearAll();
+  browser.alarms.clearAll();
   return { ok: true };
 }
 
@@ -127,17 +134,17 @@ function handleLock() {
 
 // ── Auto-lock ──────────────────────────────────────────────────
 function setupAlarms() {
-  chrome.alarms.create('autoLock', { periodInMinutes: 1 });
-  chrome.alarms.create('pollBalance', { periodInMinutes: 0.5 });
+  browser.alarms.create('autoLock', { periodInMinutes: 1 });
+  browser.alarms.create('pollBalance', { periodInMinutes: 0.5 });
 }
 
-chrome.alarms.onAlarm.addListener(async (alarm) => {
+browser.alarms.onAlarm.addListener(async (alarm) => {
   if (alarm.name === 'autoLock') {
     if (!state.locked && state.token) {
       const idle = Date.now() - lastActivity;
       if (idle > state.settings.autoLockMs) {
         handleLock();
-        chrome.notifications.create('autoLock', {
+        browser.notifications.create('autoLock', {
           type: 'basic',
           iconUrl: 'icons/icon48.png',
           title: 'JoulePAI Locked',
@@ -158,7 +165,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
 
           if (diff > 0 && state.settings.notificationsEnabled) {
             addNotification('payment_received', `Received ${diff.toLocaleString()} joules`);
-            chrome.notifications.create({
+            browser.notifications.create({
               type: 'basic',
               iconUrl: 'icons/icon48.png',
               title: 'Joules Received',
@@ -179,8 +186,8 @@ function addNotification(type, message) {
   persist(['notifications']);
   // Update badge
   const unread = state.notifications.filter(n => !n.read).length;
-  chrome.action.setBadgeText({ text: unread > 0 ? String(unread) : '' });
-  chrome.action.setBadgeBackgroundColor({ color: '#4ADE80' });
+  browser.action.setBadgeText({ text: unread > 0 ? String(unread) : '' });
+  browser.action.setBadgeBackgroundColor({ color: '#4ADE80' });
 }
 
 // ── Balance & Transactions ─────────────────────────────────────
@@ -303,10 +310,10 @@ function recordSpending(rule, amount) {
 
 function notifyTabResult(queueItem, result) {
   // Find the tab and send the result back
-  chrome.tabs.query({}, (tabs) => {
+  browser.tabs.query({}, (tabs) => {
     for (const tab of tabs) {
       if (tab.url && tab.url.includes(queueItem.origin)) {
-        chrome.tabs.sendMessage(tab.id, {
+        browser.tabs.sendMessage(tab.id, {
           type: 'joulepai:queue:result',
           queueId: queueItem.id,
           result,
@@ -343,7 +350,7 @@ function getSitePermissions(origin) {
 }
 
 // ── Message Router ─────────────────────────────────────────────
-chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+browser.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   lastActivity = Date.now();
   const handler = messageHandlers[msg.type];
   if (!handler) {
@@ -411,17 +418,50 @@ const messageHandlers = {
     return state.settings;
   },
 
+  // Privacy
+  [MSG.SET_PRIVACY_MODE]: async (msg) => {
+    const mode = msg.privacy_mode;
+    if (!['transparent', 'confidential', 'private'].includes(mode)) {
+      return { ok: false, error: 'Invalid privacy mode' };
+    }
+    if (mode === 'private') {
+      return { ok: false, error: 'Private mode (Aztec) not yet available' };
+    }
+    if (!state.wallet?.id) {
+      return { ok: false, error: 'No wallet' };
+    }
+    try {
+      const res = await apiFetch('/wallet/privacy-mode', {
+        method: 'PUT',
+        body: JSON.stringify({
+          wallet_id: state.wallet.id,
+          privacy_mode: mode,
+        }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        state.wallet = data;
+        persist(['wallet']);
+        return { ok: true, privacy_mode: mode };
+      }
+      const err = await res.json().catch(() => ({}));
+      return { ok: false, error: err.detail || 'Server error' };
+    } catch (e) {
+      return { ok: false, error: e.message };
+    }
+  },
+
   // Notifications
   [MSG.GET_NOTIFICATIONS]: async () => {
     state.notifications.forEach(n => n.read = true);
     persist(['notifications']);
-    chrome.action.setBadgeText({ text: '' });
+    browser.action.setBadgeText({ text: '' });
     return state.notifications;
   },
   [MSG.CLEAR_NOTIFICATIONS]: async () => {
     state.notifications = [];
     persist(['notifications']);
-    chrome.action.setBadgeText({ text: '' });
+    browser.action.setBadgeText({ text: '' });
     return { ok: true };
   },
 
@@ -487,13 +527,13 @@ const messageHandlers = {
 
 // ── Extension icon click (when no popup) ───────────────────────
 // The popup handles this, but we ensure badge is updated
-chrome.runtime.onInstalled.addListener(() => {
-  chrome.action.setBadgeText({ text: '' });
-  chrome.action.setBadgeBackgroundColor({ color: '#4ADE80' });
+browser.runtime.onInstalled.addListener(() => {
+  browser.action.setBadgeText({ text: '' });
+  browser.action.setBadgeBackgroundColor({ color: '#4ADE80' });
 });
 
 // ── External message handling (from content scripts in other origins) ──
-chrome.runtime.onMessageExternal.addListener((msg, sender, sendResponse) => {
+browser.runtime.onMessageExternal.addListener((msg, sender, sendResponse) => {
   // Not used in MV3 with content scripts, but reserved for future
   sendResponse({ error: 'Use content script messaging' });
 });

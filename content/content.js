@@ -14,7 +14,7 @@
   // ── Check connection status ──────────────────────────────────
   async function checkConnection() {
     try {
-      const result = await chrome.runtime.sendMessage({
+      const result = await browser.runtime.sendMessage({
         type: 'jlp:connectRequest',
         origin: window.location.origin,
       });
@@ -33,7 +33,7 @@
     badge.innerHTML = '<span class="dot"></span> JoulePAI';
     badge.addEventListener('click', () => {
       // Open extension popup
-      chrome.runtime.sendMessage({ type: 'jlp:getState' });
+      browser.runtime.sendMessage({ type: 'jlp:getState' });
     });
     document.body.appendChild(badge);
   }
@@ -70,7 +70,7 @@
 
       try {
         // Send pay request to background
-        const result = await chrome.runtime.sendMessage({
+        const result = await browser.runtime.sendMessage({
           type: 'jlp:payRequest',
           origin: window.location.origin,
           payload: {

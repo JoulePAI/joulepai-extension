@@ -73,6 +73,8 @@ export const MSG = {
   // Settings
   GET_SETTINGS:       'jlp:getSettings',
   SET_SETTINGS:       'jlp:setSettings',
+  // Privacy
+  SET_PRIVACY_MODE:   'jlp:setPrivacyMode',
   // Notifications
   GET_NOTIFICATIONS:  'jlp:getNotifications',
   CLEAR_NOTIFICATIONS:'jlp:clearNotifications',

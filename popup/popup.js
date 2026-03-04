@@ -18,6 +18,7 @@ let appState = {
   transactions: [],
   notifications: [],
   settings: {},
+  privacyMode: 'transparent', // transparent | confidential | private
   autoRules: [],
   autoApproveEnabled: true,
   queue: [],
@@ -31,7 +32,7 @@ const app = document.getElementById('app');
 // ── Messaging ──────────────────────────────────────────────────
 function send(type, data = {}) {
   return new Promise((resolve) => {
-    chrome.runtime.sendMessage({ type, ...data }, (response) => {
+    browser.runtime.sendMessage({ type, ...data }, (response) => {
       resolve(response);
     });
   });
@@ -46,6 +47,7 @@ async function init() {
     appState.wallet = d.wallet;
     appState.exchangeRate = d.exchangeRate || JOULES_PER_USD;
     appState.settings = d.settings || {};
+    appState.privacyMode = d.wallet?.privacy_mode || 'transparent';
 
     if (d.locked || !d.wallet) {
       appState.view = 'login';
@@ -175,9 +177,12 @@ function bindEvents() {
       }
 
       setLoading(true);
-      const res = await send(MSG.TRANSFER, {
-        payload: { to_handle: to, amount, note, platform: 'joulepai-extension' },
-      });
+      const payload = { to_handle: to, amount, note, platform: 'joulepai-extension' };
+      // Include privacy mode override if not using wallet default
+      if (appState.privacyMode !== 'transparent') {
+        payload.privacy_mode = appState.privacyMode;
+      }
+      const res = await send(MSG.TRANSFER, { payload });
       setLoading(false);
 
       if (res?.ok) {
@@ -239,7 +244,7 @@ async function handleAction(action, dataset) {
       await send(MSG.SET_SETTINGS, { settings: {} });
       // Re-enable via setting autoApproveEnabled
       appState.autoApproveEnabled = true;
-      await chrome.storage.local.set({ autoApproveEnabled: true });
+      await browser.storage.local.set({ autoApproveEnabled: true });
       render();
       break;
     case 'approve-queued': {
@@ -274,6 +279,22 @@ async function handleAction(action, dataset) {
       appState.notifications = [];
       render();
       break;
+    case 'cycle-privacy': {
+      const modes = ['transparent', 'confidential', 'private'];
+      const idx = modes.indexOf(appState.privacyMode);
+      const next = modes[(idx + 1) % modes.length];
+      if (next === 'private') {
+        showToast('warning', 'Private mode (Aztec) not yet available');
+        appState.privacyMode = 'transparent';
+      } else {
+        appState.privacyMode = next;
+      }
+      // Update server
+      const res = await send(MSG.SET_PRIVACY_MODE, { privacy_mode: appState.privacyMode });
+      if (!res?.ok) showToast('error', res?.error || 'Failed to update privacy mode');
+      render();
+      break;
+    }
   }
 }
 
@@ -365,6 +386,7 @@ function renderWallet() {
       <div class="balance-joules" id="balance-counter">${formatJoules(balance)}<span class="unit">J</span></div>
       <div class="balance-fiat">${usd}</div>
       ${handle ? `<div class="balance-handle-display">${esc(handle)}</div>` : ''}
+      ${appState.privacyMode !== 'transparent' ? `<div class="privacy-badge privacy-${appState.privacyMode}">${privacyModeLabel(appState.privacyMode)}</div>` : ''}
     </div>
 
     <div class="actions-row">
@@ -488,6 +510,24 @@ function renderTransactions() {
     </div>`;
 }
 
+function privacyModeLabel(mode) {
+  switch (mode) {
+    case 'transparent': return 'Transparent';
+    case 'confidential': return 'Confidential';
+    case 'private': return 'Private';
+    default: return 'Transparent';
+  }
+}
+
+function privacyModeDesc(mode) {
+  switch (mode) {
+    case 'transparent': return 'Amounts and parties visible on-chain';
+    case 'confidential': return 'Amounts hidden, parties visible';
+    case 'private': return 'Fully private (Aztec) — coming soon';
+    default: return 'Amounts and parties visible on-chain';
+  }
+}
+
 function renderSettings() {
   return `
     ${renderHeader()}
@@ -521,6 +561,13 @@ function renderSettings() {
           <input type="checkbox" data-setting="notificationsEnabled" ${appState.settings.notificationsEnabled !== false ? 'checked' : ''}>
           <span class="toggle-track"></span>
         </label>
+      </div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-row-label">Privacy Mode</div>
+          <div class="settings-row-desc">${privacyModeDesc(appState.privacyMode)}</div>
+        </div>
+        <button class="privacy-cycle-btn" data-action="cycle-privacy">${privacyModeLabel(appState.privacyMode)}</button>
       </div>
       <div class="settings-row">
         <div>

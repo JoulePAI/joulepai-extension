@@ -11,7 +11,7 @@
 
   // Inject the provider script into the page's JS context
   const script = document.createElement('script');
-  script.src = chrome.runtime.getURL('content/injected.js');
+  script.src = browser.runtime.getURL('content/injected.js');
   script.onload = () => script.remove();
   (document.head || document.documentElement).appendChild(script);
 
@@ -31,7 +31,7 @@
     try {
       switch (action) {
         case 'connect':
-          result = await chrome.runtime.sendMessage({
+          result = await browser.runtime.sendMessage({
             type: 'jlp:connectRequest',
             origin: window.location.origin,
             permissions: payload.permissions || ['read_balance', 'view_handle'],
@@ -39,7 +39,7 @@
           break;
 
         case 'pay':
-          result = await chrome.runtime.sendMessage({
+          result = await browser.runtime.sendMessage({
             type: 'jlp:payRequest',
             origin: window.location.origin,
             payload,
@@ -47,14 +47,14 @@
           break;
 
         case 'balance':
-          result = await chrome.runtime.sendMessage({
+          result = await browser.runtime.sendMessage({
             type: 'jlp:getBalance',
             origin: window.location.origin,
           });
           break;
 
         case 'getHandle':
-          result = await chrome.runtime.sendMessage({
+          result = await browser.runtime.sendMessage({
             type: 'jlp:getState',
           });
           if (result?.ok) {
@@ -68,7 +68,7 @@
           break;
 
         case 'requestPermission':
-          result = await chrome.runtime.sendMessage({
+          result = await browser.runtime.sendMessage({
             type: 'jlp:connectRequest',
             origin: window.location.origin,
             permissions: payload.permissions,
@@ -105,7 +105,7 @@
   });
 
   // ── Forward background events to the page ────────────────────
-  chrome.runtime.onMessage.addListener((msg) => {
+  browser.runtime.onMessage.addListener((msg) => {
     if (msg.type === 'joulepai:queue:result') {
       window.postMessage({
         source: 'joulepai-content',
