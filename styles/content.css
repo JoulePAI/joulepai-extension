@@ -1,0 +1,160 @@
+/* ═══════════════════════════════════════════════════════════════
+   JoulePAI Content Script Styles
+   Injected into host pages for Connect indicator + Pay buttons
+   ═══════════════════════════════════════════════════════════════ */
+
+.joulepai-connect-badge {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: rgba(5, 5, 7, 0.92);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(184, 186, 190, 0.15);
+  border-radius: 20px;
+  font-family: 'Inter', -apple-system, sans-serif;
+  font-size: 11px;
+  color: #B8BABE;
+  z-index: 2147483647;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.joulepai-connect-badge:hover {
+  border-color: rgba(184, 186, 190, 0.3);
+  transform: translateY(-1px);
+}
+
+.joulepai-connect-badge .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #4ADE80;
+  box-shadow: 0 0 6px rgba(74, 222, 128, 0.5);
+}
+
+.joulepai-pay-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(5, 5, 7, 0.8);
+  backdrop-filter: blur(4px);
+  z-index: 2147483646;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: joulepai-fade-in 0.2s ease;
+}
+
+.joulepai-pay-confirm {
+  width: 340px;
+  background: rgba(20, 20, 25, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(184, 186, 190, 0.15);
+  border-radius: 14px;
+  padding: 24px;
+  font-family: 'Inter', -apple-system, sans-serif;
+  color: #B8BABE;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  animation: joulepai-slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.joulepai-pay-confirm h3 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #D4D6DA;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.joulepai-pay-amount {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 24px;
+  font-weight: 700;
+  color: #FFFFFF;
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.joulepai-pay-usd {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: rgba(184, 186, 190, 0.5);
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.joulepai-pay-detail {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(184, 186, 190, 0.08);
+  font-size: 12px;
+}
+
+.joulepai-pay-detail-label {
+  color: rgba(184, 186, 190, 0.5);
+}
+
+.joulepai-pay-detail-value {
+  color: #D4D6DA;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+}
+
+.joulepai-pay-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.joulepai-pay-btn {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(184, 186, 190, 0.12);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.joulepai-pay-btn-confirm {
+  background: linear-gradient(135deg, rgba(184, 186, 190, 0.15), rgba(184, 186, 190, 0.05));
+  color: #FFFFFF;
+  border-color: rgba(184, 186, 190, 0.25);
+}
+
+.joulepai-pay-btn-confirm:hover {
+  background: linear-gradient(135deg, rgba(184, 186, 190, 0.25), rgba(184, 186, 190, 0.1));
+}
+
+.joulepai-pay-btn-cancel {
+  background: transparent;
+  color: #B8BABE;
+}
+
+.joulepai-pay-btn-cancel:hover {
+  background: rgba(248, 113, 113, 0.1);
+  border-color: rgba(248, 113, 113, 0.2);
+}
+
+@keyframes joulepai-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes joulepai-slide-up {
+  from { opacity: 0; transform: translateY(20px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}

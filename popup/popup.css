@@ -1,0 +1,365 @@
+/* ═══════════════════════════════════════════════════════════════
+   JoulePAI Popup — Additional styles
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── View transitions ───────────────────────────────────────── */
+.view {
+  animation: fade-in 0.25s var(--ease-out) forwards;
+}
+
+.view-hidden {
+  display: none;
+}
+
+/* ── Balance hero ───────────────────────────────────────────── */
+.balance-hero {
+  text-align: center;
+  padding: 22px 16px 18px;
+  position: relative;
+}
+
+.balance-hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 20%;
+  right: 20%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+}
+
+.balance-joules {
+  font-family: var(--font-mono);
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+}
+
+.balance-joules .unit {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--silver-dim);
+  margin-left: 4px;
+  letter-spacing: 1px;
+}
+
+.balance-fiat {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--silver-dim);
+  margin-top: 4px;
+}
+
+.balance-handle-display {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 10px;
+  padding: 3px 10px;
+  background: var(--bg-glass);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--accent);
+}
+
+/* ── Transfer form ──────────────────────────────────────────── */
+.transfer-form {
+  padding: 16px;
+}
+
+.transfer-recipient {
+  position: relative;
+}
+
+.transfer-recipient .at-sign {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--silver-dim);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.transfer-recipient .input {
+  padding-left: 26px;
+}
+
+.transfer-amount-row {
+  display: flex;
+  gap: 8px;
+}
+
+.transfer-amount-row .input-group {
+  flex: 1;
+}
+
+.transfer-amount-row .input-group:last-child {
+  flex: 0 0 100px;
+}
+
+.transfer-fee {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  font-size: 11px;
+  color: var(--silver-dim);
+  border-top: 1px solid var(--border);
+  margin-top: 4px;
+}
+
+.transfer-fee .fee-value {
+  font-family: var(--font-mono);
+  color: var(--silver);
+}
+
+/* ── Transaction list ───────────────────────────────────────── */
+.tx-list-container {
+  padding: 0 12px 12px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.tx-list-container::-webkit-scrollbar {
+  width: 3px;
+}
+.tx-list-container::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 2px;
+}
+
+/* ── Notification badge ─────────────────────────────────────── */
+.notif-dot {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  border: 1.5px solid var(--bg);
+}
+
+/* ── Settings rows ──────────────────────────────────────────── */
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.settings-row:last-child {
+  border-bottom: none;
+}
+
+.settings-row-label {
+  font-size: 13px;
+  color: var(--silver-light);
+}
+
+.settings-row-desc {
+  font-size: 11px;
+  color: var(--silver-dim);
+  margin-top: 2px;
+}
+
+/* ── Toggle switch ──────────────────────────────────────────── */
+.toggle {
+  position: relative;
+  width: 36px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-track {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  transition: all var(--transition);
+}
+
+.toggle-track::before {
+  content: '';
+  position: absolute;
+  height: 14px;
+  width: 14px;
+  left: 2px;
+  bottom: 2px;
+  background: var(--silver-dim);
+  border-radius: 50%;
+  transition: all 0.2s var(--ease-spring);
+}
+
+.toggle input:checked + .toggle-track {
+  background: var(--green-dim);
+  border-color: rgba(74, 222, 128, 0.3);
+}
+
+.toggle input:checked + .toggle-track::before {
+  transform: translateX(16px);
+  background: var(--green);
+}
+
+/* ── Auto-approve rules ─────────────────────────────────────── */
+.rule-card {
+  background: var(--bg-glass);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  margin-bottom: 8px;
+}
+
+.rule-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.rule-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--silver-light);
+}
+
+.rule-detail {
+  font-size: 11px;
+  color: var(--silver-dim);
+  font-family: var(--font-mono);
+}
+
+.rule-progress {
+  margin-top: 8px;
+  height: 3px;
+  background: var(--bg-input);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.rule-progress-bar {
+  height: 100%;
+  background: var(--green);
+  border-radius: 2px;
+  transition: width 0.3s var(--ease-out);
+}
+
+/* ── Kill switch ────────────────────────────────────────────── */
+.kill-switch {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px;
+  margin: 12px;
+  background: var(--red-dim);
+  border: 1px solid rgba(248, 113, 113, 0.2);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--red);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all var(--transition);
+}
+
+.kill-switch:hover {
+  background: rgba(248, 113, 113, 0.25);
+  border-color: rgba(248, 113, 113, 0.4);
+}
+
+.kill-switch.disabled {
+  background: var(--green-dim);
+  border-color: rgba(74, 222, 128, 0.2);
+  color: var(--green);
+}
+
+/* ── Queue items ────────────────────────────────────────────── */
+.queue-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background: var(--bg-glass);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  margin-bottom: 6px;
+}
+
+.queue-item-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+/* ── Developer panel ────────────────────────────────────────── */
+.dev-panel {
+  padding: 12px;
+}
+
+.dev-panel .api-key-display {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 8px 10px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--silver);
+  word-break: break-all;
+  user-select: all;
+  cursor: text;
+}
+
+/* ── Tab content area ───────────────────────────────────────── */
+.tab-content {
+  min-height: 280px;
+}
+
+/* ── Reputation arc (placeholder) ───────────────────────────── */
+.reputation-arc {
+  width: 80px;
+  height: 40px;
+  margin: 8px auto;
+  position: relative;
+}
+
+.reputation-arc svg {
+  width: 100%;
+  height: 100%;
+}
+
+.reputation-score {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--white);
+  text-align: center;
+  margin-top: -4px;
+}
+
+.reputation-level {
+  font-size: 11px;
+  color: var(--gold);
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
