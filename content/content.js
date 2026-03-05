@@ -30,7 +30,10 @@
     if (badge) return;
     badge = document.createElement('div');
     badge.className = 'joulepai-connect-badge';
-    badge.innerHTML = '<span class="dot"></span> JoulePAI';
+    const dot = document.createElement('span');
+    dot.className = 'dot';
+    badge.appendChild(dot);
+    badge.appendChild(document.createTextNode(' JoulePAI'));
     badge.addEventListener('click', () => {
       // Open extension popup
       browser.runtime.sendMessage({ type: 'jlp:getState' });

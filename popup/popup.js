@@ -125,7 +125,8 @@ function render() {
   };
 
   const fn = views[appState.view] || renderWallet;
-  app.innerHTML = fn();
+  const parsed = new DOMParser().parseFromString(fn(), 'text/html');
+  app.replaceChildren(...parsed.body.childNodes);
   bindEvents();
 }
 
@@ -359,10 +360,7 @@ function renderHeader() {
   const queuePending = appState.queue.filter(q => q.status === 'awaiting_approval').length;
   return `
     <div class="header">
-      <div class="header-logo">
-        <div class="logomark">J</div>
-        <span class="brand">JoulePAI</span>
-      </div>
+      <img class="header-logo-img" src="../icons/logo-header.jpg" alt="JoulePAI" />
       <div class="header-actions">
         ${queuePending > 0 ? `<button class="btn-icon" data-nav="queue" title="Queue (${queuePending} pending)" style="position:relative;border:1px solid var(--border);background:var(--bg-glass);color:var(--gold);cursor:pointer">&#9776;<span class="notif-dot" style="background:var(--gold)"></span></button>` : ''}
         <button class="btn-icon" data-nav="notifications" title="Notifications" style="position:relative;border:1px solid var(--border);background:var(--bg-glass);color:var(--silver);cursor:pointer">&#128276;${unread > 0 ? '<span class="notif-dot"></span>' : ''}</button>
@@ -760,9 +758,12 @@ function renderConnectedSites() {
 // ── Utility ────────────────────────────────────────────────────
 function esc(str) {
   if (!str) return '';
-  const div = document.createElement('div');
-  div.textContent = String(str);
-  return div.innerHTML;
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 // ── Start ──────────────────────────────────────────────────────

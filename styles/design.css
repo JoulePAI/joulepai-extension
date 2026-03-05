@@ -72,74 +72,29 @@ body::-webkit-scrollbar-thumb {
   border-radius: 2px;
 }
 
-/* ── Art Deco Header ────────────────────────────────────────── */
+/* ── Logo Header ───────────────────────────────────────────── */
 .header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 16px 10px;
-  border-bottom: 1px solid var(--border);
-  background: linear-gradient(180deg, rgba(20, 20, 25, 0.95) 0%, var(--bg) 100%);
   position: sticky;
   top: 0;
   z-index: 100;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
 }
 
-.header-logo {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.header-logo .logomark {
-  width: 28px;
-  height: 28px;
-  border: 1.5px solid var(--silver-dim);
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-mono);
-  font-weight: 700;
-  font-size: 14px;
-  color: var(--silver-light);
-  position: relative;
-}
-
-/* Art Deco corner accents */
-.header-logo .logomark::before,
-.header-logo .logomark::after {
-  content: '';
-  position: absolute;
-  width: 5px;
-  height: 5px;
-  border-color: var(--silver-dim);
-  border-style: solid;
-}
-.header-logo .logomark::before {
-  top: -1px;
-  left: -1px;
-  border-width: 1.5px 0 0 1.5px;
-}
-.header-logo .logomark::after {
-  bottom: -1px;
-  right: -1px;
-  border-width: 0 1.5px 1.5px 0;
-}
-
-.header-logo .brand {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 1.5px;
-  color: var(--silver-light);
-  text-transform: uppercase;
+.header-logo-img {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 .header-actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
   display: flex;
   align-items: center;
   gap: 6px;
+  z-index: 101;
 }
 
 /* ── Glassmorphism Panel ────────────────────────────────────── */
