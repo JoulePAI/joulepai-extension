@@ -40,6 +40,9 @@ function send(type, data = {}) {
 
 // ── Init ───────────────────────────────────────────────────────
 async function init() {
+  // Inject content scripts into active tab via activeTab permission
+  send('jlp:injectContentScripts');
+
   const res = await send(MSG.GET_STATE);
   if (res?.ok) {
     const d = res.data;

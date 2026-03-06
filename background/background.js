@@ -532,6 +532,32 @@ browser.runtime.onInstalled.addListener(() => {
   browser.action.setBadgeBackgroundColor({ color: '#4ADE80' });
 });
 
+// ── Inject content scripts on active tab (activeTab + scripting) ──
+// Called when popup opens on a non-joulepai.ai site to detect Pay buttons.
+async function injectContentScripts(tabId) {
+  try {
+    await browser.scripting.executeScript({
+      target: { tabId },
+      files: ['browser-polyfill.min.js', 'content/provider.js', 'content/content.js'],
+    });
+    await browser.scripting.insertCSS({
+      target: { tabId },
+      files: ['styles/content.css'],
+    });
+  } catch (_) {
+    // activeTab may not grant access (e.g. chrome:// pages) — ignore
+  }
+}
+
+// Listen for inject requests from popup
+messageHandlers['jlp:injectContentScripts'] = async (msg) => {
+  const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
+  if (tab && tab.id && !tab.url?.startsWith('https://joulepai.ai')) {
+    await injectContentScripts(tab.id);
+  }
+  return { ok: true };
+};
+
 // ── External message handling (from content scripts in other origins) ──
 browser.runtime.onMessageExternal.addListener((msg, sender, sendResponse) => {
   // Not used in MV3 with content scripts, but reserved for future
