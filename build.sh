@@ -17,10 +17,9 @@ STAGE_DIR="$SCRIPT_DIR/.build-stage"
 rm -rf "$DIST_DIR" "$STAGE_DIR"
 mkdir -p "$DIST_DIR" "$STAGE_DIR"
 
-# Files to include in the extension package
-INCLUDE=(
+# Common files (both builds)
+COMMON=(
   manifest.json
-  browser-polyfill.min.js
   background/background.js
   content/content.js
   content/provider.js
@@ -38,7 +37,7 @@ CHROME_DIR="$STAGE_DIR/chrome"
 FIREFOX_DIR="$STAGE_DIR/firefox"
 mkdir -p "$CHROME_DIR" "$FIREFOX_DIR"
 
-for item in "${INCLUDE[@]}"; do
+for item in "${COMMON[@]}"; do
   if [ -d "$item" ]; then
     cp -r "$item" "$CHROME_DIR/$item"
     cp -r "$item" "$FIREFOX_DIR/$item"
@@ -50,15 +49,20 @@ for item in "${INCLUDE[@]}"; do
   fi
 done
 
-# ── Chrome: manifest stays as-is (MV3 service_worker) ─────────
+# ── Chrome: uses compat.js (no polyfill) ──────────────────────
 echo "Building Chrome extension..."
+cp compat.js "$CHROME_DIR/compat.js"
 (cd "$CHROME_DIR" && zip -r "$DIST_DIR/joulepai-chrome.zip" . -q)
 echo "  -> dist/joulepai-chrome.zip"
 
-# ── Firefox: modify manifest for Gecko ─────────────────────────
+# ── Firefox: uses browser-polyfill.min.js ─────────────────────
 echo "Building Firefox extension..."
 
-# Firefox MV3: change service_worker to scripts array, add gecko settings
+# Copy polyfill for Firefox
+cp browser-polyfill.min.js "$FIREFOX_DIR/browser-polyfill.min.js"
+
+# Firefox MV3: change service_worker to scripts array, add gecko settings,
+# restore browser-polyfill.min.js in content_scripts and popup
 python3 -c "
 import json
 
@@ -70,6 +74,10 @@ m['background'] = {
     'scripts': ['browser-polyfill.min.js', 'background/background.js'],
     'type': 'module'
 }
+
+# Restore polyfill in content_scripts (Chrome manifest has compat.js)
+for cs in m.get('content_scripts', []):
+    cs['js'] = ['browser-polyfill.min.js' if x == 'compat.js' else x for x in cs['js']]
 
 # Add Firefox-specific settings
 m['browser_specific_settings'] = {
@@ -86,6 +94,9 @@ with open('$FIREFOX_DIR/manifest.json', 'w') as f:
     json.dump(m, f, indent=2)
     f.write('\n')
 "
+
+# Firefox popup.html: swap compat.js back to browser-polyfill.min.js
+sed -i 's|../compat.js|../browser-polyfill.min.js|' "$FIREFOX_DIR/popup/popup.html"
 
 # Firefox background.js: remove the Chrome shim (polyfill loaded via manifest scripts)
 sed -i '/^\/\/ Cross-browser compatibility/,/^}$/d' "$FIREFOX_DIR/background/background.js"

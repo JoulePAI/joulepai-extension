@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "JoulePAI Wallet",
   "short_name": "JoulePAI",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "The agent-native wallet for the joule economy. Pay, trade, and operate at machine speed.",
   "icons": {
     "16": "icons/icon16.png",
@@ -24,7 +24,7 @@
   "content_scripts": [
     {
       "matches": ["https://joulepai.ai/*"],
-      "js": ["browser-polyfill.min.js", "content/provider.js", "content/content.js"],
+      "js": ["compat.js", "content/provider.js", "content/content.js"],
       "css": ["styles/content.css"],
       "run_at": "document_start",
       "all_frames": false
