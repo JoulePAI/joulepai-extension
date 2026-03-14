@@ -52,6 +52,13 @@ async function bootstrap() {
 
 bootstrap();
 
+// ── First install: open getting-started page ─────────────────────
+browser.runtime.onInstalled.addListener((details) => {
+  if (details.reason === 'install') {
+    browser.tabs.create({ url: 'https://joulepai.ai/getting-started' });
+  }
+});
+
 // ── Persist helpers ────────────────────────────────────────────
 function persist(keys) {
   const data = {};

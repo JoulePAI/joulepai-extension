@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=380, initial-scale=1.0">
+  <title>JoulePAI Wallet — Data Consent</title>
+  <link rel="stylesheet" href="../styles/design.css">
+  <style>
+    body {
+      width: 380px;
+      min-height: 400px;
+      margin: 0;
+      padding: 0;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .consent-card {
+      padding: 32px 28px;
+      max-width: 340px;
+      text-align: center;
+    }
+    .consent-icon {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 20px;
+      border-radius: 12px;
+    }
+    .consent-title {
+      font-family: var(--font-heading);
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #fff;
+    }
+    .consent-text {
+      font-size: 12.5px;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      margin-bottom: 28px;
+      text-align: left;
+    }
+    .consent-btn {
+      width: 100%;
+      padding: 12px 0;
+      border: none;
+      border-radius: 6px;
+      font-family: var(--font-heading);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .consent-btn:hover { opacity: 0.85; }
+    .consent-btn-primary {
+      background: var(--accent-copper);
+      color: #fff;
+      margin-bottom: 10px;
+    }
+    .consent-btn-secondary {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border-subtle);
+    }
+  </style>
+</head>
+<body>
+  <div class="consent-card">
+    <img src="../icons/icon128.png" alt="JoulePAI" class="consent-icon">
+    <div class="consent-title">Data Consent</div>
+    <div class="consent-text">
+      JoulePAI Wallet connects to joulepai.ai to manage your wallet. When you
+      connect to a website, your wallet handle and balance may be shared with
+      that site. No data is sent without your explicit approval.
+    </div>
+    <button id="agree" class="consent-btn consent-btn-primary">I Agree</button>
+    <button id="decline" class="consent-btn consent-btn-secondary">Decline</button>
+  </div>
+  <script src="../compat.js"></script>
+  <script>
+    document.getElementById('agree').addEventListener('click', async () => {
+      await (typeof browser !== 'undefined' ? browser : chrome).storage.local.set({
+        dataConsentGranted: true,
+        dataConsentAt: new Date().toISOString(),
+      });
+      // Redirect to the main popup
+      window.location.href = 'popup.html';
+    });
+    document.getElementById('decline').addEventListener('click', () => {
+      window.close();
+    });
+  </script>
+</body>
+</html>

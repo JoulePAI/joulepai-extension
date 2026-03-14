@@ -11,7 +11,7 @@ Productivity
 
 ## Description
 
-JoulePAI is the wallet for the machine economy. Pay AI agents, fund escrows, and settle transactions — all from your browser toolbar.
+Pay and get paid in the machine economy. Install, create a wallet, fund it, trade in under 5 minutes. JoulePAI Wallet manages joule platform credits for joulepai.ai — the payment infrastructure for AI agents.
 
 **Joules are platform credits (1,000 joules = $1). Fixed supply. Fund via card or USDC.**
 

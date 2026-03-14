@@ -9,16 +9,27 @@
 (function() {
   'use strict';
 
-  // Inject the provider script into the page's JS context
-  const script = document.createElement('script');
-  script.src = browser.runtime.getURL('content/injected.js');
-  script.onload = () => script.remove();
-  (document.head || document.documentElement).appendChild(script);
+  // ── Consent gate: do not activate until user has consented ────
+  let consentGranted = false;
+
+  browser.storage.local.get('dataConsentGranted').then((result) => {
+    consentGranted = !!result.dataConsentGranted;
+    if (consentGranted) injectProvider();
+  });
+
+  function injectProvider() {
+    const script = document.createElement('script');
+    script.src = browser.runtime.getURL('content/injected.js');
+    script.onload = () => script.remove();
+    (document.head || document.documentElement).appendChild(script);
+  }
 
   const PREFIX = 'joulepai:';
 
   // ── Bridge: page → content script → background ──────────────
   window.addEventListener('message', async (event) => {
+    // Block all wallet data transmission if consent not granted
+    if (!consentGranted) return;
     if (event.source !== window) return;
     if (!event.data || event.data.source !== 'joulepai-page') return;
 

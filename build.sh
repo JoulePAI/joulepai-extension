@@ -20,6 +20,7 @@ mkdir -p "$DIST_DIR" "$STAGE_DIR"
 # Common files (both builds)
 COMMON=(
   manifest.json
+  THIRD_PARTY_LIBRARIES.md
   background/background.js
   content/content.js
   content/provider.js
@@ -27,6 +28,7 @@ COMMON=(
   popup/popup.html
   popup/popup.js
   popup/popup.css
+  popup/consent.html
   styles/
   utils/
   icons/
@@ -95,8 +97,9 @@ with open('$FIREFOX_DIR/manifest.json', 'w') as f:
     f.write('\n')
 "
 
-# Firefox popup.html: swap compat.js back to browser-polyfill.min.js
+# Firefox popup.html + consent.html: swap compat.js to browser-polyfill.min.js
 sed -i 's|../compat.js|../browser-polyfill.min.js|' "$FIREFOX_DIR/popup/popup.html"
+sed -i 's|../compat.js|../browser-polyfill.min.js|' "$FIREFOX_DIR/popup/consent.html"
 
 # Firefox background.js: remove the Chrome shim (polyfill loaded via manifest scripts)
 sed -i '/^\/\/ Cross-browser compatibility/,/^}$/d' "$FIREFOX_DIR/background/background.js"
