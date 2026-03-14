@@ -81,18 +81,6 @@
     <button id="decline" class="consent-btn consent-btn-secondary">Decline</button>
   </div>
   <script src="../compat.js"></script>
-  <script>
-    document.getElementById('agree').addEventListener('click', async () => {
-      await (typeof browser !== 'undefined' ? browser : chrome).storage.local.set({
-        dataConsentGranted: true,
-        dataConsentAt: new Date().toISOString(),
-      });
-      // Redirect to the main popup
-      window.location.href = 'popup.html';
-    });
-    document.getElementById('decline').addEventListener('click', () => {
-      window.close();
-    });
-  </script>
+  <script src="consent.js"></script>
 </body>
 </html>

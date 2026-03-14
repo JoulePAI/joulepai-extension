@@ -392,14 +392,14 @@ body::-webkit-scrollbar-thumb {
   color: var(--red);
 }
 
-.tx-bsv-link {
+.tx-chain-link {
   font-size: 10px;
   color: var(--accent);
   text-decoration: none;
   transition: color var(--transition);
 }
 
-.tx-bsv-link:hover {
+.tx-chain-link:hover {
   color: var(--silver-light);
 }
 

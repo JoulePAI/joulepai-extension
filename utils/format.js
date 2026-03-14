@@ -65,7 +65,7 @@ export function truncateId(id) {
 }
 
 /**
- * Truncate BSV tx hash.
+ * Truncate on-chain tx hash.
  * "b8f7b48e0336..." → "b8f7b4…7507f5"
  */
 export function truncateTx(txid) {

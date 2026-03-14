@@ -444,7 +444,7 @@ function renderTxList(txs) {
           <div class="tx-type">${esc(typeLabel)}</div>
           <div class="tx-meta">
             <span>${formatTime(tx.created_at)}</span>
-            ${tx.bsv_tx_id ? `<a href="${BSV_EXPLORER}/${tx.bsv_tx_id}" target="_blank" class="tx-bsv-link" title="Verify on BSV">${truncateTx(tx.bsv_tx_id)}</a>` : ''}
+            ${tx.bsv_tx_id ? `<a href="${BSV_EXPLORER}/${tx.bsv_tx_id}" target="_blank" class="tx-chain-link" title="Verify on-chain">${truncateTx(tx.bsv_tx_id)}</a>` : ''}
           </div>
         </div>
         <div class="tx-amount">

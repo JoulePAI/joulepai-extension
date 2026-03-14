@@ -29,6 +29,8 @@ COMMON=(
   popup/popup.js
   popup/popup.css
   popup/consent.html
+  popup/consent.js
+  popup/consent-gate.js
   styles/
   utils/
   icons/
@@ -84,8 +86,8 @@ for cs in m.get('content_scripts', []):
 # Add Firefox-specific settings
 m['browser_specific_settings'] = {
     'gecko': {
-        'id': 'joulepai-wallet@joulepai.ai',
-        'strict_min_version': '109.0',
+        'id': 'wallet@joulepai.ai',
+        'strict_min_version': '140.0',
         'data_collection_permissions': {
             'required': ['none']
         }
