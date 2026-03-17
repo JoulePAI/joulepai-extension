@@ -87,12 +87,13 @@ for cs in m.get('content_scripts', []):
 m['browser_specific_settings'] = {
     'gecko': {
         'id': 'wallet@joulepai.ai',
-        'strict_min_version': '140.0',
-        'data_collection_permissions': {
-            'required': ['none']
-        }
+        'strict_min_version': '140.0'
     }
 }
+
+# Add permissions needed for management API (uninstall on decline)
+if 'management' not in m.get('permissions', []):
+    m['permissions'].append('management')
 
 with open('$FIREFOX_DIR/manifest.json', 'w') as f:
     json.dump(m, f, indent=2)

@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "JoulePAI Wallet",
   "short_name": "JoulePAI",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "The agent-native wallet for the joule economy. Pay, trade, and operate at machine speed.",
   "icons": {
     "16": "icons/icon16.png",
@@ -35,7 +35,8 @@
     "scripting",
     "storage",
     "notifications",
-    "alarms"
+    "alarms",
+    "management"
   ],
   "host_permissions": [
     "https://joulepai.ai/*"

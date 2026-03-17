@@ -8,7 +8,7 @@
   <style>
     body {
       width: 380px;
-      min-height: 400px;
+      min-height: 460px;
       margin: 0;
       padding: 0;
       background: var(--bg-primary);
@@ -20,29 +20,52 @@
       justify-content: center;
     }
     .consent-card {
-      padding: 32px 28px;
+      padding: 28px 24px;
       max-width: 340px;
-      text-align: center;
     }
     .consent-icon {
       width: 56px;
       height: 56px;
-      margin: 0 auto 20px;
+      margin: 0 auto 16px;
       border-radius: 12px;
+      display: block;
     }
     .consent-title {
       font-family: var(--font-heading);
       font-size: 16px;
       font-weight: 600;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       color: #fff;
+      text-align: center;
     }
     .consent-text {
-      font-size: 12.5px;
+      font-size: 12px;
       line-height: 1.7;
       color: var(--text-secondary);
-      margin-bottom: 28px;
+      margin-bottom: 12px;
       text-align: left;
+    }
+    .consent-text strong {
+      color: #fff;
+    }
+    .consent-data-list {
+      font-size: 11.5px;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      margin: 0 0 8px 0;
+      padding-left: 18px;
+      text-align: left;
+    }
+    .consent-data-list li {
+      margin-bottom: 4px;
+    }
+    .consent-decline-note {
+      font-size: 11px;
+      line-height: 1.5;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      text-align: left;
+      font-style: italic;
     }
     .consent-btn {
       width: 100%;
@@ -71,14 +94,24 @@
 <body>
   <div class="consent-card">
     <img src="../icons/icon128.png" alt="JoulePAI" class="consent-icon">
-    <div class="consent-title">Data Consent</div>
+    <div class="consent-title">Data Consent Required</div>
     <div class="consent-text">
-      JoulePAI Wallet connects to joulepai.ai to manage your wallet. When you
-      connect to a website, your wallet handle and balance may be shared with
-      that site. No data is sent without your explicit approval.
+      JoulePAI Wallet needs your permission to access the following data:
+    </div>
+    <ul class="consent-data-list">
+      <li><strong>Current tab URL</strong> — to detect Pay with Joules buttons on websites you visit</li>
+      <li><strong>Wallet handle</strong> — shared with sites you explicitly connect to</li>
+      <li><strong>Wallet balance</strong> — shared with sites you explicitly connect to</li>
+    </ul>
+    <div class="consent-text">
+      Your wallet handle and balance are only shared with websites you connect to.
+      No data is collected by JoulePAI or sent to third parties.
+    </div>
+    <div class="consent-decline-note">
+      If you decline, the extension cannot function and will offer to uninstall itself.
     </div>
     <button id="agree" class="consent-btn consent-btn-primary">I Agree</button>
-    <button id="decline" class="consent-btn consent-btn-secondary">Decline</button>
+    <button id="decline" class="consent-btn consent-btn-secondary">Decline and Uninstall</button>
   </div>
   <script src="../compat.js"></script>
   <script src="consent.js"></script>

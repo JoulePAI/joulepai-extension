@@ -52,10 +52,11 @@ async function bootstrap() {
 
 bootstrap();
 
-// ── First install: open getting-started page ─────────────────────
-browser.runtime.onInstalled.addListener((details) => {
+// ── First install: show consent popup immediately ─────────────────
+browser.runtime.onInstalled.addListener(async (details) => {
   if (details.reason === 'install') {
-    browser.tabs.create({ url: 'https://joulepai.ai/getting-started' });
+    // Open consent page as a popup tab so user sees it immediately
+    browser.tabs.create({ url: browser.runtime.getURL('popup/consent.html') });
   }
 });
 

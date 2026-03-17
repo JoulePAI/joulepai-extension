@@ -3,8 +3,9 @@
 ## webextension-polyfill
 
 - **Version**: 0.12.0
-- **Source**: https://github.com/nicolo-ribaudo/webextension-polyfill
-- **npm**: https://www.npmjs.com/package/webextension-polyfill
+- **Source**: https://github.com/mozilla/webextension-polyfill
+- **Release**: https://github.com/mozilla/webextension-polyfill/releases/tag/0.12.0
+- **npm**: https://www.npmjs.com/package/webextension-polyfill/v/0.12.0
 - **License**: MPL-2.0 (Mozilla Public License 2.0)
 - **Purpose**: Provides a cross-browser `browser.*` API that wraps Chrome's `chrome.*` callback-based APIs with Promise-based equivalents, enabling the same codebase to work on both Chrome and Firefox.
 
@@ -18,4 +19,4 @@
 ### License Text
 
 This library is licensed under the Mozilla Public License 2.0.
-Full license: https://github.com/nicolo-ribaudo/webextension-polyfill/blob/master/LICENSE
+Full license: https://github.com/mozilla/webextension-polyfill/blob/master/LICENSE
